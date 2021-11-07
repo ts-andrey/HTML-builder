@@ -1,0 +1,1 @@
+04-copy-directory\files\imgs\not-imgs\inner-folder\inner-folder-text.txt
