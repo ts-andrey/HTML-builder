@@ -13,6 +13,8 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
+rl.setPrompt("(file) 'fill me with your fantasies': ");
+rl.prompt();
 rl.on('line', function (line) {
   if (line.toLowerCase().trim() === 'exit') rl.close();
   else {
@@ -20,5 +22,5 @@ rl.on('line', function (line) {
     rl.prompt();
   }
 });
-rl.setPrompt("(file) 'fill me with your fantasies': ");
-rl.prompt();
+
+rl.on('close', () => console.log("\n(file) 'end of the filling, good by!'"));
