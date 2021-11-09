@@ -142,15 +142,19 @@ function checkHtml(pathFolder) {
       if (el[0].indexOf('.html') === el[0].length - 5) return el[0];
     });
     files.forEach(el => {
+      let fileName;
+      if (el.includes('\\')) {
+        const tempArr = el.split('\\');
+        fileName = tempArr[tempArr.length - 1].split('.')[0];
+      } else {
+        const tempArr = el.split('/');
+        fileName = tempArr[tempArr.length - 1].split('.')[0];
+      }
       let readPath = el;
       const readStream = fs.createReadStream(readPath, { encoding: 'binary' });
       readStream.on('readable', () => {
         const data = readStream.read();
-        if (data) {
-          if (el.includes('header.html')) htmlString = htmlString.replace('{{header}}', `${data}`);
-          if (el.includes('footer.html')) htmlString = htmlString.replace('{{footer}}', `${data}`);
-          if (el.includes('articles.html')) htmlString = htmlString.replace('{{articles}}', `${data}`);
-        }
+        if (data) htmlString = htmlString.replace(`{{${fileName}}}`, `${data}`);
       });
     });
     setTimeout(() => {
