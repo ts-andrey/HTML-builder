@@ -17,11 +17,19 @@ async function checkDir(directory, folder) {
     if (!items.includes(folder)) fs.mkdir(path.join(directory, folder), err => err);
   });
 }
-checkDir(dir, resultFolder);
-fs.rm(path.join(dir, resultFolder, copyFolder), { recursive: true, force: true }, err => err);
-setTimeout(() => {
-  checkDir(path.join(dir, resultFolder), copyFolder);
-}, 50);
+async function setInitialState() {
+  try {
+    await checkDir(dir, resultFolder);
+    await fs.rm(path.join(dir, resultFolder, copyFolder), { recursive: true, force: true }, err => err);
+    setTimeout(() => {
+      checkDir(path.join(dir, resultFolder), copyFolder);
+    }, 50);
+  } catch (err) {
+    return err;
+  }
+}
+
+setInitialState();
 
 function fuseFiles(files, finalFile) {
   const writeStream = fs.createWriteStream(finalFile, { encoding: 'binary', flags: 'a' });
@@ -75,6 +83,7 @@ function checkStyles(pathFolder) {
 
   getFiles(pathFolder, styleArray);
   checkFinalSize(path.join(dir, resultFolder, 'style.css'), finalStyleSize);
+  
   setTimeout(() => {
     styleArray.forEach(el => {
       stylesSize += el[1];
